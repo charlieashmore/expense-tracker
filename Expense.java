@@ -3,4 +3,8 @@ public record Expense(double amount, String category, String description, String
     public String toString() {
         return String.format("£%8.2f %-15s %-20s %s", amount(), category(), description(), date());
     }
+
+    public String toCsv() {
+        return amount() + "," + category() + "," + description() + "," + date();
+    }
 }

@@ -7,6 +7,8 @@ public class Main {
         ExpenseTracker et = new ExpenseTracker();
         Scanner scanner = new Scanner(System.in);
 
+        et.loadFromCSVFile("expenses.csv");
+
         while (running) {
             displayMenu();
             int choice = scanner.nextInt();
@@ -32,6 +34,7 @@ public class Main {
         }
 
         scanner.close();
+        et.saveToCSVFile("expenses.csv");
     }
 
     public static void displayMenu() {
