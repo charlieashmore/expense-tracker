@@ -72,4 +72,21 @@ public class ExpenseTracker {
             System.out.println("Error reading from file: " + e.getMessage());
         }
     }
+
+    public List<Expense> filterByCategory(String category) {
+        List<Expense> filteredExpenses = new ArrayList<>();
+        for (Expense expense : expenses) {
+            if (expense.category().equals(category)) {
+                filteredExpenses.add(expense);
+            }
+        }
+
+        return expenses;
+    }
+
+    public void listSpecificExpenses(List<Expense> specificExpenses) {
+        for (Expense expense : specificExpenses) {
+            System.out.println(expense);
+        }
+    }
 }
