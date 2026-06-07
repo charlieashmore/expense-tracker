@@ -27,9 +27,7 @@ public class ExpenseTracker {
             System.out.println("No Expenses Recorded.");
             return;
         }
-        for (Expense expense : expenses) {
-            System.out.println(expense);
-        }
+        listSpecificExpenses(expenses);
     }
 
     public double getTotal() {
@@ -56,13 +54,18 @@ public class ExpenseTracker {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                double amount = Double.parseDouble(parts[0]);
-                String category = parts[1];
-                String description = parts[2];
-                String date = parts[3];
-                Expense expense = new Expense(amount, category, description, date);
-                addExpense(expense);
+                try {
+                    String[] parts = line.split(",");
+                    double amount = Double.parseDouble(parts[0]);
+                    String category = parts[1];
+                    String description = parts[2];
+                    String date = parts[3];
+                    Expense expense = new Expense(amount, category, description, date);
+                    addExpense(expense);
+                }
+                catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                    System.out.println("Skipping malformed line in file: " + e.getMessage());
+                }
             }
         }
         catch (FileNotFoundException e) {
@@ -81,7 +84,7 @@ public class ExpenseTracker {
             }
         }
 
-        return expenses;
+        return filteredExpenses;
     }
 
     public void listSpecificExpenses(List<Expense> specificExpenses) {
