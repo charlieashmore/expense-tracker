@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.Map;
@@ -120,5 +121,17 @@ public class ExpenseTracker {
             breakdown.put(category, totalByCategory(category));
         }
         return breakdown;
+    }
+
+    public List<Expense> sortByAmount() {
+        List<Expense> sortedExpenses = new ArrayList<>(expenses);
+        sortedExpenses.sort(Comparator.comparingDouble(e -> e.amount()));
+        return sortedExpenses;
+    }
+
+    public List<Expense> sortByAmountDescending() {
+        List<Expense> sortedExpenses = new ArrayList<>(expenses);
+        sortedExpenses.sort(Comparator.comparingDouble(Expense::amount).reversed());
+        return sortedExpenses;
     }
 }

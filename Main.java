@@ -22,14 +22,31 @@ public class Main {
                     et.saveToCSVFile(DATA_FILE);
                     break;
                 case 2:
-                    et.listAll();
+                    System.out.println("1 - Ascending (lowest expense first)");
+                    System.out.println("2 - Descending (highest expense first)");
+                    int sortChoice = scanner.nextInt();
+                    scanner.nextLine();
+                    switch (sortChoice) {
+                        case 1:
+                            et.listSpecificExpenses(et.sortByAmount());
+                            break;
+                        case 2:
+                            et.listSpecificExpenses(et.sortByAmountDescending());
+                            break;
+                        default:
+                            System.out.println("Invalid Option Selected. Returning to Menu.");
+                            break;
+                    }
                     break;
                 case 3:
+                    et.listAll();
+                    break;
+                case 4:
                     System.out.println("Enter category: ");
                     String category = scanner.nextLine();
                     et.listSpecificExpenses(et.filterByCategory(category));
                     break;
-                case 4:
+                case 5:
                     double minAmount = 0;
                     while (true) {
                         try {
@@ -45,14 +62,14 @@ public class Main {
                     }
                     et.listSpecificExpenses(et.filterByAmount(minAmount));
                     break;
-                case 5:
+                case 6:
                     double total = et.getTotal();
                     System.out.println("Expense Total: £" + String.format("%.2f", total));
                     break;
-                case 6:
+                case 7:
                     displayBreakdown(et);
                     break;
-                case 7:
+                case 8:
                     running = false;
                     break;
                 default:
@@ -68,12 +85,13 @@ public class Main {
     public static void displayMenu() {
         System.out.println("==== Expense Tracker ====");
         System.out.println("1 - Add new expense");
-        System.out.println("2 - Show all expenses");
-        System.out.println("3 - Show all expenses for a category");
-        System.out.println("4 - Show all expenses above a certain amount");
-        System.out.println("5 - Show total ");
-        System.out.println("6 - Show category breakdown");
-        System.out.println("7 - Quit");
+        System.out.println("2 - Show sorted expenses");
+        System.out.println("3 - Show all expenses");
+        System.out.println("4 - Show all expenses for a category");
+        System.out.println("5 - Show all expenses above a certain amount");
+        System.out.println("6 - Show total ");
+        System.out.println("7 - Show category breakdown");
+        System.out.println("8 - Quit");
     }
 
     public static void addExpenseFromInput(Scanner scanner, ExpenseTracker et) {
