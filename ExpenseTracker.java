@@ -9,6 +9,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -64,11 +66,11 @@ public class ExpenseTracker {
                     double amount = Double.parseDouble(parts[0]);
                     String category = parts[1];
                     String description = parts[2];
-                    String date = parts[3];
+                    LocalDate date = LocalDate.parse(parts[3], Expense.FORMATTER);
                     Expense expense = new Expense(amount, category, description, date);
                     addExpense(expense);
                 }
-                catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                catch (NumberFormatException | ArrayIndexOutOfBoundsException | DateTimeParseException e) {
                     System.out.println("Skipping malformed line in file: " + e.getMessage());
                 }
             }

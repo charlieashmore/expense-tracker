@@ -1,6 +1,8 @@
 import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class Main {
     private static final String DATA_FILE = "expenses.csv";
@@ -21,7 +23,7 @@ public class Main {
                     et.saveToCSVFile(DATA_FILE);
                     break;
                 case 2:
-                    int sortChoice = readInt(scanner, "1 - Sort by amount (low to high)\n2 - Sort by amount (high to low)");
+                    int sortChoice = readInt(scanner, "1 - Sort by amount (low to high)\n2 - Sort by amount (high to low)\n");
                     switch (sortChoice) {
                         case 1:
                             et.listSpecificExpenses(et.sortByAmount());
@@ -84,9 +86,7 @@ public class Main {
         String category = scanner.nextLine();
         System.out.println("Expense description: ");
         String description = scanner.nextLine();
-        System.out.println("Expense date: ");
-        String date = scanner.nextLine();
-
+        LocalDate date = readDate(scanner, "Enter date (dd/MM/yyyy): ");
         Expense expense = new Expense(amount, category, description, date);
         et.addExpense(expense);
     }
@@ -128,5 +128,18 @@ public class Main {
             }
         }
         return value;
+    }
+
+    public static LocalDate readDate(Scanner scanner, String prompt) {
+        while (true) {
+            try {
+                System.out.println(prompt);
+                String inputString = scanner.nextLine();
+                return LocalDate.parse(inputString, Expense.FORMATTER);
+            }
+            catch (DateTimeParseException e) {
+                System.out.println("Please enter a valid date in the format dd/MM/yyyy.");
+            }
+        }
     }
 }
