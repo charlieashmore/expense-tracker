@@ -96,4 +96,9 @@ public class ExpenseTracker {
     public List<Expense> filterByAmount(double amount) {
         return expenses.stream().filter(e -> e.amount() > amount).toList();
     }
+
+    public double totalByCategory(String category) {
+        List<Expense> filteredExpenses = filterByCategory(category);
+        return filteredExpenses.stream().mapToDouble(e -> e.amount()).sum();
+    }
 }
