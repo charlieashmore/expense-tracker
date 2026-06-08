@@ -92,6 +92,10 @@ public class ExpenseTracker {
     }
 
     public void listSpecificExpenses(List<Expense> specificExpenses) {
+        if (specificExpenses.isEmpty()) {
+            System.out.println("No expenses found.");
+            return;
+        }
         for (Expense expense : specificExpenses) {
             System.out.println(expense);
         }
