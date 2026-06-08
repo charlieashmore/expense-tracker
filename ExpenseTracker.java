@@ -92,4 +92,8 @@ public class ExpenseTracker {
             System.out.println(expense);
         }
     }
+
+    public List<Expense> filterByAmount(double amount) {
+        return expenses.stream().filter(e -> e.amount() > amount).toList();
+    }
 }
