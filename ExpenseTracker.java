@@ -110,11 +110,11 @@ public class ExpenseTracker {
 
     public double totalByCategory(String category) {
         List<Expense> filteredExpenses = filterByCategory(category);
-        return filteredExpenses.stream().mapToDouble(e -> e.amount()).sum();
+        return filteredExpenses.stream().mapToDouble(Expense::amount).sum();
     }
 
     public Set<String> getDistinctCategories() {
-        return expenses.stream().map(expense -> expense.category()).collect(Collectors.toSet());
+        return expenses.stream().map(Expense::category).collect(Collectors.toSet());
     }
 
     public Map<String, Double> getCategoryBreakdown() {
@@ -127,13 +127,25 @@ public class ExpenseTracker {
 
     public List<Expense> sortByAmount() {
         List<Expense> sortedExpenses = new ArrayList<>(expenses);
-        sortedExpenses.sort(Comparator.comparingDouble(e -> e.amount()));
+        sortedExpenses.sort(Comparator.comparingDouble(Expense::amount));
         return sortedExpenses;
     }
 
     public List<Expense> sortByAmountDescending() {
         List<Expense> sortedExpenses = new ArrayList<>(expenses);
         sortedExpenses.sort(Comparator.comparingDouble(Expense::amount).reversed());
+        return sortedExpenses;
+    }
+
+    public List<Expense> sortByDate() {
+        List<Expense> sortedExpenses = new ArrayList<>(expenses);
+        sortedExpenses.sort(Comparator.comparing(Expense::date));
+        return sortedExpenses;
+    }
+
+    public List<Expense> sortByDateDescending() {
+        List<Expense> sortedExpenses = new ArrayList<>(expenses);
+        sortedExpenses.sort(Comparator.comparing(Expense::date).reversed());
         return sortedExpenses;
     }
 }

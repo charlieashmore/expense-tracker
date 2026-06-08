@@ -23,13 +23,19 @@ public class Main {
                     et.saveToCSVFile(DATA_FILE);
                     break;
                 case 2:
-                    int sortChoice = readInt(scanner, "1 - Sort by amount (low to high)\n2 - Sort by amount (high to low)\n");
+                    int sortChoice = readInt(scanner, "1 - Sort by amount (low to high)\n2 - Sort by amount (high to low)\n3 - Sort by date (oldest to newest)\n4 - Sort by date (newest to oldest)\n");
                     switch (sortChoice) {
                         case 1:
                             et.listSpecificExpenses(et.sortByAmount());
                             break;
                         case 2:
                             et.listSpecificExpenses(et.sortByAmountDescending());
+                            break;
+                        case 3:
+                            et.listSpecificExpenses(et.sortByDate());
+                            break;
+                        case 4:
+                            et.listSpecificExpenses(et.sortByDateDescending());
                             break;
                         default:
                             System.out.println("Invalid Option Selected. Returning to Menu.");
@@ -69,15 +75,7 @@ public class Main {
     }
 
     public static void displayMenu() {
-        System.out.println("==== Expense Tracker ====");
-        System.out.println("1 - Add new expense");
-        System.out.println("2 - Show sorted expenses");
-        System.out.println("3 - Show all expenses");
-        System.out.println("4 - Show all expenses for a category");
-        System.out.println("5 - Show all expenses above a certain amount");
-        System.out.println("6 - Show total ");
-        System.out.println("7 - Show category breakdown");
-        System.out.println("8 - Quit");
+        System.out.println("==== Expense Tracker ====\n1 - Add new expense\n2 - Show sorted expenses\n3 - Show all expenses\n4 - Show all expenses for a category\n5 - Show all expenses above a certain amount\n6 - Show total \n7 - Show category breakdown\n8 - Quit");
     }
 
     public static void addExpenseFromInput(Scanner scanner, ExpenseTracker et) {
