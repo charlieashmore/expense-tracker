@@ -1,5 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -100,5 +104,17 @@ public class ExpenseTracker {
     public double totalByCategory(String category) {
         List<Expense> filteredExpenses = filterByCategory(category);
         return filteredExpenses.stream().mapToDouble(e -> e.amount()).sum();
+    }
+
+    public Set<String> getDistinctCategories() {
+        return expenses.stream().map(expense -> expense.category()).collect(Collectors.toSet());
+    }
+
+    public Map<String, Double> getCategoryBreakdown() {
+        Map<String, Double> breakdown = new HashMap<>();
+        for (String category : getDistinctCategories()) {
+            breakdown.put(category, totalByCategory(category));
+        }
+        return breakdown;
     }
 }

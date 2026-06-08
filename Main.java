@@ -1,4 +1,5 @@
 import java.util.InputMismatchException;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -70,5 +71,10 @@ public class Main {
 
         Expense expense = new Expense(amount, category, description, date);
         et.addExpense(expense);
+    }
+
+    public static void displayBreakdown(ExpenseTracker et) {
+        Map<String, Double> breakdown = et.getCategoryBreakdown();
+        breakdown.forEach((category, total) -> System.out.printf("%-15s £%.2fn", category, total));
     }
 }
