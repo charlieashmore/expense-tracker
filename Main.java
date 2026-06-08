@@ -14,18 +14,14 @@ public class Main {
 
         while (running) {
             displayMenu();
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            int choice = readInt(scanner, "");
             switch (choice) {
                 case 1:
                     addExpenseFromInput(scanner, et);
                     et.saveToCSVFile(DATA_FILE);
                     break;
                 case 2:
-                    System.out.println("1 - Ascending (lowest expense first)");
-                    System.out.println("2 - Descending (highest expense first)");
-                    int sortChoice = scanner.nextInt();
-                    scanner.nextLine();
+                    int sortChoice = readInt(scanner, "1 - Sort by amount (low to high)\n2 - Sort by amount (high to low)");
                     switch (sortChoice) {
                         case 1:
                             et.listSpecificExpenses(et.sortByAmount());
@@ -47,19 +43,7 @@ public class Main {
                     et.listSpecificExpenses(et.filterByCategory(category));
                     break;
                 case 5:
-                    double minAmount = 0;
-                    while (true) {
-                        try {
-                            System.out.println("Enter mininum amount: ");
-                            minAmount = scanner.nextDouble();
-                            scanner.nextLine();
-                            break;
-                        }
-                        catch (InputMismatchException e) {
-                            System.out.println("Not a expense amount value.");
-                            scanner.nextLine();
-                        }
-                    }
+                    double minAmount = readDouble(scanner, "Enter minimum amount: ");
                     et.listSpecificExpenses(et.filterByAmount(minAmount));
                     break;
                 case 6:
@@ -95,21 +79,7 @@ public class Main {
     }
 
     public static void addExpenseFromInput(Scanner scanner, ExpenseTracker et) {
-        double amount = 0;
-
-        while (true) {
-            try {
-                System.out.println("Expense amount: ");
-                amount = scanner.nextDouble();
-                scanner.nextLine();
-                break;
-            }
-            catch (InputMismatchException e) {
-                System.out.println("Not a expense amount value.");
-                scanner.nextLine();
-            }
-        }
-
+        double amount = readDouble(scanner, "Enter amount: ");
         System.out.println("Expense category: ");
         String category = scanner.nextLine();
         System.out.println("Expense description: ");
@@ -124,5 +94,39 @@ public class Main {
     public static void displayBreakdown(ExpenseTracker et) {
         Map<String, Double> breakdown = et.getCategoryBreakdown();
         breakdown.forEach((category, total) -> System.out.printf("%-15s £%.2f%n", category, total));
+    }
+
+    public static int readInt(Scanner scanner, String prompt) {
+        int value = 0;
+        while (true) {
+            try {
+                System.out.print(prompt);
+                value = scanner.nextInt();
+                scanner.nextLine();
+                break;
+            }
+            catch (InputMismatchException e) {
+                System.out.println("Please enter a valid whole number.");
+                scanner.nextLine();
+            }
+        }
+        return value;
+    }
+
+    public static double readDouble(Scanner scanner, String prompt) {
+        double value = 0;
+        while (true) {
+            try {
+                System.out.print(prompt);
+                value = scanner.nextDouble();
+                scanner.nextLine();
+                break;
+            }
+            catch (InputMismatchException e) {
+                System.out.println("Please enter a valid number.");
+                scanner.nextLine();
+            }
+        }
+        return value;
     }
 }
