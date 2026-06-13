@@ -23,6 +23,10 @@ public class Main {
                     et.saveToCSVFile(DATA_FILE);
                     break;
                 case 2:
+                    et.removeLastExpense();
+                    et.saveToCSVFile(DATA_FILE);
+                    break;
+                case 3:
                     int sortChoice = readInt(scanner, "1 - Sort by amount (low to high)\n2 - Sort by amount (high to low)\n3 - Sort by date (oldest to newest)\n4 - Sort by date (newest to oldest)\n");
                     switch (sortChoice) {
                         case 1:
@@ -42,26 +46,26 @@ public class Main {
                             break;
                     }
                     break;
-                case 3:
+                case 4:
                     et.listAll();
                     break;
-                case 4:
+                case 5:
                     System.out.println("Enter category: ");
                     String category = scanner.nextLine();
                     et.listSpecificExpenses(et.filterByCategory(category));
                     break;
-                case 5:
+                case 6:
                     double minAmount = readDouble(scanner, "Enter minimum amount: ");
                     et.listSpecificExpenses(et.filterByAmount(minAmount));
                     break;
-                case 6:
+                case 7:
                     double total = et.getTotal();
                     System.out.println("Expense Total: £" + String.format("%.2f", total));
                     break;
-                case 7:
+                case 8:
                     displayBreakdown(et);
                     break;
-                case 8:
+                case 9:
                     running = false;
                     break;
                 default:
@@ -75,7 +79,7 @@ public class Main {
     }
 
     public static void displayMenu() {
-        System.out.println("==== Expense Tracker ====\n1 - Add new expense\n2 - Show sorted expenses\n3 - Show all expenses\n4 - Show all expenses for a category\n5 - Show all expenses above a certain amount\n6 - Show total \n7 - Show category breakdown\n8 - Quit");
+        System.out.println("==== Expense Tracker ====\n1 - Add new expense\n2 - Remove last expense\n3 - Show sorted expenses\n4 - Show all expenses\n5 - Show all expenses for a category\n6 - Show all expenses above a certain amount\n7 - Show total \n8 - Show category breakdown\n9 - Quit");
     }
 
     public static void addExpenseFromInput(Scanner scanner, ExpenseTracker et) {

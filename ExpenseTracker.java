@@ -148,4 +148,13 @@ public class ExpenseTracker {
         sortedExpenses.sort(Comparator.comparing(Expense::date).reversed());
         return sortedExpenses;
     }
+
+    public void removeLastExpense() {
+        if (expenses.isEmpty()) {
+            System.out.println("No expenses to remove.");
+            return;
+        }
+        Expense removedExpense = expenses.remove(expenses.size() - 1);
+        System.out.println("Removed last expense: " + removedExpense);
+    }
 }
