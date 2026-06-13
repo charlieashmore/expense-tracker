@@ -5,14 +5,17 @@ import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Collectors;
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import com.opencsv.CSVWriter;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
+
 
 public class ExpenseTracker {
     private List<Expense> expenses = new ArrayList<>();
@@ -47,26 +50,26 @@ public class ExpenseTracker {
     }
 
     public void saveToCSVFile(String filename) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
+        try (CSVWriter writer = new CSVWriter(new FileWriter(filename))) {
             for (Expense expense : expenses) {
-                writer.println(expense.toCsv());
+                String[] row = {String.valueOf(expense.amount()), expense.category(), expense.description(), expense.date().format(Expense.FORMATTER)};
+                writer.writeNext(row);
             }
         }
         catch (IOException e) {
-            System.out.println("Error saving file: " + e.getMessage());
+            System.out.println("Error writing to file: " + e.getMessage());
         }
     }
 
     public void loadFromCSVFile(String filename) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
+        try (CSVReader reader = new CSVReader(new FileReader(filename))) {
+            String[] line;
+            while ((line = reader.readNext()) != null) {
                 try {
-                    String[] parts = line.split(",");
-                    double amount = Double.parseDouble(parts[0]);
-                    String category = parts[1];
-                    String description = parts[2];
-                    LocalDate date = LocalDate.parse(parts[3], Expense.FORMATTER);
+                    double amount = Double.parseDouble(line[0]);
+                    String category = line[1];
+                    String description = line[2];
+                    LocalDate date = LocalDate.parse(line[3], Expense.FORMATTER);
                     Expense expense = new Expense(amount, category, description, date);
                     addExpense(expense);
                 }
@@ -78,7 +81,7 @@ public class ExpenseTracker {
         catch (FileNotFoundException e) {
             // no saved data yet — first run
         }
-        catch (IOException e) {
+        catch (IOException | CsvValidationException e) {
             System.out.println("Error reading from file: " + e.getMessage());
         }
     }
