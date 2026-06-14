@@ -160,4 +160,8 @@ public class ExpenseTracker {
         Expense removedExpense = expenses.remove(expenses.size() - 1);
         System.out.println("Removed last expense: " + removedExpense);
     }
+
+    public void addAll(List<Expense> newExpenses) {
+        expenses.addAll(newExpenses);
+    }
 }

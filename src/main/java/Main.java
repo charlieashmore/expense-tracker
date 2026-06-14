@@ -3,6 +3,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 public class Main {
     private static final String DATA_FILE = "expenses.csv";
@@ -66,6 +67,12 @@ public class Main {
                     displayBreakdown(et);
                     break;
                 case 9:
+                    System.out.println("Enter Nationwide CSV filename: ");
+                    String filename = scanner.nextLine();
+                    nationwideImport(et, filename);
+                    et.saveToCSVFile(DATA_FILE);
+                    break;
+                case 10:
                     running = false;
                     break;
                 default:
@@ -79,7 +86,7 @@ public class Main {
     }
 
     public static void displayMenu() {
-        System.out.println("==== Expense Tracker ====\n1 - Add new expense\n2 - Remove last expense\n3 - Show sorted expenses\n4 - Show all expenses\n5 - Show all expenses for a category\n6 - Show all expenses above a certain amount\n7 - Show total \n8 - Show category breakdown\n9 - Quit");
+        System.out.println("==== Expense Tracker ====\n1 - Add new expense\n2 - Remove last expense\n3 - Show sorted expenses\n4 - Show all expenses\n5 - Show all expenses for a category\n6 - Show all expenses above a certain amount\n7 - Show total \n8 - Show category breakdown\n9 - Import Bank CSV\n10 - Quit");
     }
 
     public static void addExpenseFromInput(Scanner scanner, ExpenseTracker et) {
@@ -143,5 +150,11 @@ public class Main {
                 System.out.println("Please enter a valid date in the format dd/MM/yyyy.");
             }
         }
+    }
+
+    public static void nationwideImport(ExpenseTracker et, String filename) {
+        NationwideImporter importer = new NationwideImporter();
+        List<Expense> importedExpenses = importer.importFromCsv(filename);
+        et.addAll(importedExpenses);
     }
 }
