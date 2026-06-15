@@ -67,10 +67,19 @@ public class Main {
                     displayBreakdown(et);
                     break;
                 case 9:
-                    System.out.println("Enter Nationwide CSV filename: ");
+                    System.out.println("Nationwide or Monzo? (Enter 'N' for Nationwide, 'M' for Monzo): ");
+                    String bank = scanner.nextLine();
+                    System.out.println("Enter CSV filename: ");
                     String filename = scanner.nextLine();
-                    nationwideImport(et, filename);
-                    et.saveToCSVFile(DATA_FILE);
+                    if (bank.equalsIgnoreCase("N")) {
+                        importFromBank(et, filename, new NationwideImporter());
+                        et.saveToCSVFile(DATA_FILE);
+                    } else if (bank.equalsIgnoreCase("M")) {
+                        importFromBank(et, filename, new MonzoImporter());
+                        et.saveToCSVFile(DATA_FILE);
+                    } else {
+                        System.out.println("Invalid option. Please enter 'N' for Nationwide or 'M' for Monzo.");
+                    }
                     break;
                 case 10:
                     running = false;
@@ -152,9 +161,9 @@ public class Main {
         }
     }
 
-    public static void nationwideImport(ExpenseTracker et, String filename) {
-        NationwideImporter importer = new NationwideImporter();
+    public static void importFromBank(ExpenseTracker et, String filename, CsvImporter importer) {
         List<Expense> importedExpenses = importer.importFromCsv(filename);
         et.addAll(importedExpenses);
+        System.out.println("Imported " + importedExpenses.size() + " expenses.");
     }
 }

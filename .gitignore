@@ -24,6 +24,8 @@ hs_err_pid*
 replay_pid*
 
 expenses.csv
+nationwide.csv
+monzo.csv
 target/
 .vscode/
-nationwide.csv
+
