@@ -28,4 +28,6 @@ nationwide.csv
 monzo.csv
 target/
 .vscode/
+venv/
+__pycache__/
 
