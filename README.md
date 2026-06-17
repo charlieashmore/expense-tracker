@@ -7,26 +7,65 @@ Nationwide imports arrive without categories, and Monzo's categories differ from
 
 ### Approach
 
-- **Training data:** transaction descriptions paired with categories, sourced from the Monzo export (As Monzo does provide categories with the data). Only spending transactions are used (matching what the app imports), and categories with too few examples are excluded as they cannot be learned reliably.
-- **Text vectorisation:** descriptions are converted to numeric features using TF-IDF, which weights words by how informative they are — distinctive merchant names (e.g. "TESCO", "SPOTIFY") are weighted highly, while words common to every transaction (e.g. "GBR") are down-weighted meaning the model does not prioritise these words.
-- **Model:** a Multinomial Naive Bayes classifier, a standard and effective baseline for text classification.
+- **Training data:** transaction descriptions paired with categories, sourced from the Monzo export (As Monzo does provide categories with the data). Only spending transactions are used (matching what the app imports), non-spending categories (Income, Savings, Transfers) are excluded by name, and categories with too few examples are excluded as they cannot be learned reliably.
+- **Text vectorisation:** descriptions are converted to numeric features using TF-IDF, which weights words by how informative they are — distinctive merchant names (e.g. "TESCO", "SPOTIFY") are weighted highly, while words common to every transaction (e.g. "GBR") are down-weighted, so the model does not prioritise them.
+- **Model:** I compared two models, a Multinomial Naive Bayes (a standard baseline for text classification), and Logistic Regression.
+
+### Evaluation method
+
+Single train/test splits were found to give noisy accuracy figures that varied by several points between runs, because the available dataset is currently too small. To measure reliably, my evaluation uses **5-fold cross-validation**, which averages performance across multiple splits for a more trustworthy estimate.
 
 ### Results
 
-On an initial dataset of ~100 spending transactions across 6 categories, the model achieved **71% overall accuracy**. Performance varied by category in an interpretable way:
+On ~155 spending transactions across 6 categories, evaluated with 5-fold cross-validation:
 
-- **Strong:** categories with distinctive merchant names and sufficient examples (e.g. Eating Out, Entertainment) were predicted reliably.
-- **Moderate:** the dominant category (Groceries) was caught consistently but somewhat over-predicted, as the model leans toward the majority class when uncertain (some General were predicted as Groceries due to uncertainty).
-- **Weak:** sparse categories (Transport, Shopping — only a handful of examples each) and "General" performed poorly as the bulk of General transactions were people's names.
+| Model | Cross-validated accuracy |
+|-------|--------------------------|
+| Multinomial Naive Bayes | ~60% |
+| Logistic Regression | ~73% |
+
+These values are from an average of 5 iterations of data analysis giving a more concrete figure that actually means something instead of a lucky or unlucky single split figure. Logistic Regression performed notably better, likely because it does not assume words are independent (as Naive Bayes does), which was the main issue with the first model (e.g. Inconsistent naming conventions with TESCO STORES TESCO-STORES and TESCO PFS). It also handles class imbalance more gracefully.
+
+Per-category performance (Multinomial Naive Bayes, single split):
+
+```
+               precision    recall  f1-score   support
+   Eating out       1.00      0.60      0.75         5
+Entertainment       1.00      0.60      0.75         5
+      General       0.80      0.80      0.80         5
+    Groceries       0.52      1.00      0.69        11
+     Shopping       0.00      0.00      0.00         3
+    Transport       0.00      0.00      0.00         3
+
+     accuracy                           0.66        32
+```
+
+Both Shopping and Transport were unreliable here due to data sparsity, the model also over-predicted the Groceries Category as anything if there was any uncertainty it would assume groceries as it is the main category.
+
+Per-category performance (Logistic Regression, single split):
+
+```
+               precision    recall  f1-score   support
+   Eating out       0.75      0.60      0.67         5
+Entertainment       0.83      1.00      0.91         5
+      General       0.80      0.80      0.80         5
+    Groceries       0.73      1.00      0.85        11
+     Shopping       1.00      0.67      0.80         3
+    Transport       0.00      0.00      0.00         3
+
+     accuracy                           0.78        32
+```
+
+Most categories are predicted reliably. Transport (only ~3 examples) is the main exception, reflecting data sparsity rather than a model limitation.
 
 ### Analysis and limitations
 
-The model's weaknesses are primarily **data limitations rather than modelling flaws**:
-
-- **Sparse categories** (Transport, Shopping) lacked enough examples to learn from. The clearest improvement is simply more training data from a longer time period.
-- **The "General" category** largely consists of person-to-person payments, where the description is a person's name. A name carries no inherent category signal, so these are inherently difficult to predict from the description alone.
+- **Model choice was the main improvement** — switching from Naive Bayes to Logistic Regression improved cross-validated accuracy by ~13 points, more than expanding the dataset did.
+- **Remaining errors are largely data-driven:** Transport has too few examples to learn, which caps achievable accuracy.
+- **More data alone didn't break the ceiling** — expanding the dataset left accuracy roughly unchanged until the model was switched, showing that model choice and data *quality* mattered more than data *quantity* here.
 
 ### Possible improvements at this stage
 
 - Train on a larger dataset (longer export window) to improve sparse-category performance.
 - Add a confidence threshold so low-certainty predictions are flagged as "Uncategorised" for manual review rather than guessed.
+- Cleaning inconsistent source labels where the same merchant is categorised differently.
