@@ -1,5 +1,6 @@
 import pandas as pd
 
+import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
@@ -55,6 +56,12 @@ def cross_validate_model(X, y):
     print(f"Cross-validation accuracy scores: {scores}")
     print(f"Average accuracy: {scores.mean()}")
 
+def train_and_save_model(X, y, filename="model.pkl"):
+    monzo_pipeline = make_pipeline(TfidfVectorizer(), LogisticRegression(max_iter=1000))
+    monzo_pipeline.fit(X, y)
+    joblib.dump(monzo_pipeline, filename)
+    print(f"Model sucessfully saved to {filename}")
+
 def main():
     monzo_df = pd.read_csv("../monzo_full.csv")
     explore_monzo_df(monzo_df)
@@ -63,5 +70,7 @@ def main():
     model, vectoriser, X_test_vector, y_test = train_model(X, y)
     evaluate_model(model, X_test_vector, y_test)
     cross_validate_model(X, y)
+    train_and_save_model(X, y)
+
 if __name__ == "__main__":
     main()

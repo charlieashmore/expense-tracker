@@ -23,12 +23,10 @@
 hs_err_pid*
 replay_pid*
 
-expenses.csv
-nationwide.csv
-monzo.csv
-monzo_full.csv
 target/
 .vscode/
 venv/
 __pycache__/
+*.pkl
+*.csv
 
