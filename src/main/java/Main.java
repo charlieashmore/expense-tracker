@@ -163,7 +163,9 @@ public class Main {
 
     public static void importFromBank(ExpenseTracker et, String filename, CsvImporter importer) {
         List<Expense> importedExpenses = importer.importFromCsv(filename);
-        et.addAll(importedExpenses);
-        System.out.println("Imported " + importedExpenses.size() + " expenses.");
+        Categoriser categoriser = new Categoriser();
+        List<Expense> categorisedExpenses = categoriser.categoriseExpenses(importedExpenses);
+        et.addAll(categorisedExpenses);
+        System.out.println("Imported " + categorisedExpenses.size() + " expenses.");
     }
 }

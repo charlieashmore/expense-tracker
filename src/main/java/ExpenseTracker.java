@@ -20,10 +20,6 @@ import com.opencsv.exceptions.CsvValidationException;
 public class ExpenseTracker {
     private List<Expense> expenses = new ArrayList<>();
 
-    public ExpenseTracker() {
-
-    }
-
     public void addExpense(Expense expense) {
         expenses.add(expense);
     }

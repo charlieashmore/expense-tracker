@@ -7,7 +7,7 @@ CONFIDENCE_THRESHOLD = 0.5
 def predict_categories(input_filename, output_filename, model_file="model.pkl"):
     model = joblib.load(model_file)
     input_df = pd.read_csv(input_filename)
-    descriptions = input_df["Description"].str.replace(r"\s+", " ", regex=True).str.replace("-", " ").str.strip()
+    descriptions = input_df["Description"].fillna("").str.replace(r"\s+", " ", regex=True).str.replace("-", " ").str.strip()
 
     probabilities = model.predict_proba(descriptions)
     predicted_categories = model.classes_[probabilities.argmax(axis=1)]

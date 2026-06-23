@@ -9,6 +9,10 @@ public class MonzoImporter extends CsvImporter {
         LocalDate date = LocalDate.parse(line[1], MONZO_DATE_FORMATTER);
         String description = line[14].replaceAll("\\s+", " ").trim();
         double amount = Double.parseDouble(line[7].replace(",", ""));
+        String monzoCategory = line[6];
+        if (monzoCategory.equals("Savings") || monzoCategory.equals("Income") || monzoCategory.equals("Transfers")) {
+            return null;
+        }
         if (amount >= 0) {
             return null;
         }

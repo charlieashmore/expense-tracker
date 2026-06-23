@@ -24,7 +24,7 @@ On ~155 spending transactions across 6 categories, evaluated with 5-fold cross-v
 | Multinomial Naive Bayes | ~60% |
 | Logistic Regression | ~73% |
 
-These values are from an average of 5 iterations of data analysis giving a more concrete figure that actually means something instead of a lucky or unlucky single split figure. Logistic Regression performed notably better, likely because it does not assume words are independent (as Naive Bayes does), which was the main issue with the first model (e.g. Inconsistent naming conventions with TESCO STORES TESCO-STORES and TESCO PFS). It also handles class imbalance more gracefully.
+These values are from an average across 5 folds giving a more concrete figure that actually means something instead of a lucky or unlucky single split figure. Logistic Regression performed notably better, likely because it does not assume words are independent (as Naive Bayes does), which was the main issue with the first model (e.g. Inconsistent naming conventions with TESCO STORES TESCO-STORES and TESCO PFS). It also handles class imbalance more gracefully.
 
 Per-category performance (Multinomial Naive Bayes, single split):
 
@@ -40,7 +40,7 @@ Entertainment       1.00      0.60      0.75         5
      accuracy                           0.66        32
 ```
 
-Both Shopping and Transport were unreliable here due to data sparsity, the model also over-predicted the Groceries Category as anything if there was any uncertainty it would assume groceries as it is the main category.
+Both Shopping and Transport were unreliable here due to data sparsity, the model also over-predicted the Groceries Category - when uncertain, it defaulted to it as the dominant category.
 
 Per-category performance (Logistic Regression, single split):
 
@@ -58,14 +58,25 @@ Entertainment       0.83      1.00      0.91         5
 
 Most categories are predicted reliably. Transport (only ~3 examples) is the main exception, reflecting data sparsity rather than a model limitation.
 
+### Model Integration
+
+Transactions are now automatically categorised during the import stage. It works by the Java application invoking the Python model using ProcessBuilder, giving transaction descriptions to the model and receiving predictions for the categories back. The model is trained once by running the categoriser.py file while in the virtual environment and saved, and then loaded for the prediction instead of retraining every import.
+
+Due to data sparsity, there can be some uncertainty when the model predicts the category. Therefore, any prediction that falls under the confidence threshold of 0.5 will be left as "Uncategorised" instead of guessing. This is based on the idea that it is better to flag these uncertain transactions for manual review rather than guess them incorrectly.
+
+The model successfully predicts categories for both Nationwide and Monzo importers even though the training data currently only includes Monzo transactions.
+
 ### Analysis and limitations
 
-- **Model choice was the main improvement** — switching from Naive Bayes to Logistic Regression improved cross-validated accuracy by ~13 points, more than expanding the dataset did.
-- **Remaining errors are largely data-driven:** Transport has too few examples to learn, which caps achievable accuracy.
-- **More data alone didn't break the ceiling** — expanding the dataset left accuracy roughly unchanged until the model was switched, showing that model choice and data *quality* mattered more than data *quantity* here.
+- **Model choice was the main improvement** - switching from Naive Bayes to Logistic Regression improved cross-validated accuracy by ~13 points, more than expanding the dataset did.
+- **Remaining errors are largely data-driven** - Transport has too few examples to learn, which caps achievable accuracy.
+- **Coverage limitation** - The model, by design, only categorises merchants that it has seen in training. It cannot generalise unfamiliar merchants (e.g. a supermarket currently not in the training data, or a one off transaction on an unfamiliar website).
+- **More data alone didn't break the ceiling** - expanding the dataset left accuracy roughly unchanged until the model was switched, showing that model choice and data *quality* mattered more than data *quantity* here.
+- **Monzo imports were categorised much better than Nationwide imports** - Monzo imports were categorised successfully at a rate of ~64%. Comparing this to the Nationwide rate of ~38% it was a lot more successful. This is due to the fact that the model is currently trained on solely Monzo transactions naturally giving a higher success rate. And the fact that both the Nationwide and Monzo accounts were largely used at different merchants. This exact scenario reflects a train/deploy distribution mismatch, meaning that the models success depends on the training data representing actual spending patterns.
 
 ### Possible improvements at this stage
 
-- Train on a larger dataset (longer export window) to improve sparse-category performance.
-- Add a confidence threshold so low-certainty predictions are flagged as "Uncategorised" for manual review rather than guessed.
-- Cleaning inconsistent source labels where the same merchant is categorised differently.
+- Train on a larger, more varied dataset to improve sparse-category performance.
+- Train with both Monzo and Nationwide transactions instead of just Monzo.
+- Add labelled Nationwide transactions to the training data so the model has exposure to both accounts.
+- Manual category override feature to give the correct category to uncategorised transactions.
