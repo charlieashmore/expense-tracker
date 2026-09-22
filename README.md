@@ -1,6 +1,39 @@
 # expense-tracker
 A Java CLI application for tracking personal expenses with CSV-based persistence
 
+## Overview
+
+This program is a menu-based, CLI expense tracker that can help with budgeting and financial analysis. The financial data is stored as a CSV file and can either be added manually using the menu or imported as csv from bank statements (currently supports Monzo and Nationwide). Machine Learning categorisation is also used to give standardised categories to all provided financial data across the multiple banks to give a further insight into spending.
+
+### Features
+
+- Add and remove expenses manually
+- Filter data by category and amount
+- Sort data by amount or date
+- Category breakdowns and totals
+- Import bank statements (Nationwide and Monzo CSV)
+- Automatic ML categorisation on import
+- CSV persistence using OpenCSV (dependancy managed with Maven)
+
+### Requirements (Necessary to run the program)
+
+- Java 21
+- Maven
+- Python 3.x (with venv) including the packages contained in **requirements.txt**
+- OpenCSV (Handled with Maven)
+
+### To run this program
+
+- Clone the repository
+- Setup a Python venv and install the requirements (run **pip install -r requirements.txt**)
+- Train and save the model (run **python categoriser.py** from **ml/** with the venv active)
+- Build and run the Java app (run **mvn compile exec:java**)
+- To import the bank CSV files, place them in the project root and run the import option from the menu
+
+## Testing
+
+(JUnit Testing to be added)
+
 ## ML Transaction Categoriser
 
 Nationwide imports arrive without categories, and Monzo's categories differ from a consistent scheme. A machine-learning categoriser predicts a spending category from each transaction's description, giving one consistent categorisation across all sources. The model is trained on data from both Nationwide and Monzo bank statements.
@@ -24,7 +57,7 @@ On ~155 spending transactions across 6 categories using Monzo data only, evaluat
 | Multinomial Naive Bayes | ~60% |
 | Logistic Regression | ~73% |
 
-On ~437 spending transactions across 6 categories using both Nationwide and Monzo data, evaluated with 5-fold cross-validation:
+On ~400 spending transactions across 6 categories using both Nationwide and Monzo data, evaluated with 5-fold cross-validation:
 
 | Model | Cross-validated accuracy |
 |-------|--------------------------|
@@ -36,7 +69,7 @@ Although cross-validation is used to measure overall performance, the classifica
 
 #### Monzo-only dataset
 
-Per-category performance (Multinomial Naive Bayes, single split):
+**Per-category performance (Multinomial Naive Bayes, single split):**
 
 ```
                precision    recall  f1-score   support
@@ -52,7 +85,7 @@ Entertainment       1.00      0.60      0.75         5
 
 Both Shopping and Transport were unreliable here due to data sparsity. The model also over-predicted the Groceries category. When uncertain, it defaulted to it as the dominant category.
 
-Per-category performance (Logistic Regression, single split) {Monzo-only}:
+**Per-category performance - Logistic Regression, Monzo only (single split):**
 
 ```
                precision    recall  f1-score   support
@@ -70,7 +103,7 @@ Most categories are predicted reliably. Transport (only ~3 examples) is the main
 
 #### Combined dataset
 
-Per-category performance (Logistic Regression, single split) {Nationwide and Monzo}:
+**Per-category performance - Logistic Regression, Nationwide and Monzo (single split):**
 
 ```
                precision    recall  f1-score   support
@@ -85,6 +118,8 @@ Entertainment       0.67      0.40      0.50         5
 ```
 
 Although all categories are now predicted more accurately, the remaining low-frequency categories, particularly Shopping and Entertainment, would still benefit from additional training data.
+
+In real-world use, Nationwide's uncategorised imports dropped from ~62% to ~21% when the combined model was used. This shows that the main issue was the lack of data coverage in the training data rather than a problem with the model.
 
 ### Model Integration
 
