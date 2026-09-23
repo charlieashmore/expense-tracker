@@ -45,6 +45,10 @@ public class ExpenseTracker {
         return total;
     }
 
+    public List<Expense> getExpenses() {
+        return new ArrayList<>(expenses);
+    }
+
     public void saveToCSVFile(String filename) {
         try (CSVWriter writer = new CSVWriter(new FileWriter(filename))) {
             for (Expense expense : expenses) {
@@ -159,5 +163,13 @@ public class ExpenseTracker {
 
     public void addAll(List<Expense> newExpenses) {
         expenses.addAll(newExpenses);
+    }
+
+    public void updateCategory(int index, String newCategory) {
+        if (index >= 0 && index < expenses.size()) {
+            Expense originalExpense = expenses.get(index);
+            Expense updatedExpense = new Expense(originalExpense.amount(), newCategory, originalExpense.description(), originalExpense.date());
+            expenses.set(index, updatedExpense);
+        }
     }
 }

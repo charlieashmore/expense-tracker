@@ -82,6 +82,26 @@ public class Main {
                     }
                     break;
                 case 10:
+                    if (et.getExpenses().isEmpty()) {
+                        System.out.println("No expenses to update.");
+                        break;
+                    }
+                    List<Expense> expenses = et.getExpenses();
+                    for (int i = 0; i < expenses.size(); i++) {
+                        System.out.print((i+1) + " - " + expenses.get(i).toString() + "\n");
+                    }
+                    int expenseChoice = readInt(scanner, "Select expense to edit (1-" + expenses.size() + "): ");
+                    if (expenseChoice < 1 || expenseChoice > expenses.size()) {
+                        System.out.println("Invalid selection.");
+                        break;
+                    }
+                    System.out.println("Enter new category: ");
+                    String newCategory = scanner.nextLine();
+                    et.updateCategory(expenseChoice - 1, newCategory);
+                    et.saveToCSVFile(DATA_FILE);
+                    System.out.println("Category updated successfully.");
+                    break;
+                case 11:
                     running = false;
                     break;
                 default:
@@ -95,7 +115,7 @@ public class Main {
     }
 
     public static void displayMenu() {
-        System.out.println("==== Expense Tracker ====\n1 - Add new expense\n2 - Remove last expense\n3 - Show sorted expenses\n4 - Show all expenses\n5 - Show all expenses for a category\n6 - Show all expenses above a certain amount\n7 - Show total \n8 - Show category breakdown\n9 - Import Bank CSV\n10 - Quit");
+        System.out.println("==== Expense Tracker ====\n1 - Add new expense\n2 - Remove last expense\n3 - Show sorted expenses\n4 - Show all expenses\n5 - Show all expenses for a category\n6 - Show all expenses above a certain amount\n7 - Show total \n8 - Show category breakdown\n9 - Import Bank CSV\n10 - Update Category\n11 - Quit");
     }
 
     public static void addExpenseFromInput(Scanner scanner, ExpenseTracker et) {

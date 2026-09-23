@@ -11,6 +11,7 @@ This program is a menu-based, CLI expense tracker that can help with budgeting a
 - Filter data by category and amount
 - Sort data by amount or date
 - Category breakdowns and totals
+- Manually override or assign the category of an expense
 - Import bank statements (Nationwide and Monzo CSV)
 - Automatic ML categorisation on import
 - CSV persistence using OpenCSV (dependancy managed with Maven)
@@ -139,5 +140,4 @@ The model successfully predicts categories for both Nationwide and Monzo importe
 ### Possible improvements at this stage
 
 - Collect more training data for the remaining unreliable categories (Shopping and Entertainment).
-- Add a manual category override feature for uncategorised transactions.
 - Periodically retrain the model as more labelled transactions accumulate.
