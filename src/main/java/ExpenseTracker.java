@@ -153,12 +153,9 @@ public class ExpenseTracker {
     }
 
     public void removeLastExpense() {
-        if (expenses.isEmpty()) {
-            System.out.println("No expenses to remove.");
-            return;
+        if (!expenses.isEmpty()) {
+            expenses.remove(expenses.size() - 1);
         }
-        Expense removedExpense = expenses.remove(expenses.size() - 1);
-        System.out.println("Removed last expense: " + removedExpense);
     }
 
     public void addAll(List<Expense> newExpenses) {

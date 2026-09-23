@@ -33,7 +33,22 @@ This program is a menu-based, CLI expense tracker that can help with budgeting a
 
 ## Testing
 
-(JUnit Testing to be added)
+The application includes automated unit tests using JUnit to verify core expense-tracking functionality.
+
+### Features Tested
+
+- Adding expenses
+- Removing the last expense
+- Sorting expenses
+- Filtering expenses
+- Category handling
+- Expense calculations
+
+There are currently **8 tests**, all of which pass successfully:
+
+![JUnit tests passing](images/junit-tests.png)
+
+The tests report **8 tests with 0 failures, 0 errors, and 0 skipped tests**.
 
 ## ML Transaction Categoriser
 

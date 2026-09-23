@@ -24,7 +24,14 @@ public class Main {
                     et.saveToCSVFile(DATA_FILE);
                     break;
                 case 2:
-                    et.removeLastExpense();
+                    if (et.getExpenses().isEmpty()) {
+                        System.out.println("No expenses to remove.");
+                        break;
+                    }
+                    else {
+                        et.removeLastExpense();
+                        System.out.println("Removed last expense.");
+                    }
                     et.saveToCSVFile(DATA_FILE);
                     break;
                 case 3:
